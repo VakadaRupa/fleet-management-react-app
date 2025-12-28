@@ -1,30 +1,39 @@
-import { useState, useCallback } from "react";
-import Navbar from "../components/Navbar";
+import React, { useState, useCallback } from "react";
 import Sidebar from "../components/Sidebar";
+import Navbar from "../components/Navbar";
 import FleetCard from "../components/FleetCard";
 
 const Admin = () => {
   const [fleets, setFleets] = useState([]);
 
-  const updateDriver = useCallback((id, newDriver) => {
-    setFleets(prev =>
-      prev.map(f =>
-        f.id === id ? { ...f, driver: newDriver } : f
+  const addFleet = (fleet) => {
+    setFleets((prev) => [...prev, fleet]);
+  };
+
+  const updateDriver = useCallback((id, driverName) => {
+    setFleets((prev) =>
+      prev.map((fleet) =>
+        fleet.id === id ? { ...fleet, driver: driverName } : fleet
       )
     );
   }, []);
 
   const toggleAvailability = useCallback((id) => {
-    setFleets(prev =>
-      prev.map(f =>
-        f.id === id ? { ...f, available: !f.available } : f
+    setFleets((prev) =>
+      prev.map((fleet) =>
+        fleet.id === id
+          ? {
+              ...fleet,
+              available: fleet.available === "Available" ? "Unavailable" : "Available",
+            }
+          : fleet
       )
     );
   }, []);
 
   const deleteFleet = useCallback((id) => {
-    if (window.confirm("Are you sure?")) {
-      setFleets(prev => prev.filter(f => f.id !== id));
+    if (window.confirm("Are you sure you want to delete this vehicle?")) {
+      setFleets((prev) => prev.filter((fleet) => fleet.id !== id));
     }
   }, []);
 
@@ -32,15 +41,22 @@ const Admin = () => {
     <div>
       <Navbar />
       <div style={{ display: "flex" }}>
-        <Sidebar setFleets={setFleets} />
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)" }}>
-          {fleets.map(fleet => (
+        <Sidebar addFleet={addFleet} />
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(3, 1fr)",
+            gap: "1rem",
+            padding: "1rem",
+          }}
+        >
+          {fleets.map((fleet) => (
             <FleetCard
               key={fleet.id}
               fleet={fleet}
-              onUpdate={updateDriver}
-              onToggle={toggleAvailability}
-              onDelete={deleteFleet}
+              updateDriver={updateDriver}
+              toggleAvailability={toggleAvailability}
+              deleteFleet={deleteFleet}
             />
           ))}
         </div>

@@ -1,66 +1,52 @@
-import { useState } from "react";
+import React, { useState } from "react";
 
-const Sidebar = ({ setFleets }) => {
-  const [reg, setReg] = useState("");
-  const [category, setCategory] = useState("");
+const Sidebar = ({ addFleet }) => {
+  const [regNo, setRegNo] = useState("");
+  const [category, setCategory] = useState("Auto");
   const [driver, setDriver] = useState("");
-  const [available, setAvailable] = useState(true);
+  const [available, setAvailable] = useState("Available");
 
   const handleAdd = () => {
-    if (!reg || !category || !driver) {
-      alert("All fields are required");
+    if (!regNo || !driver) {
+      alert("Please fill required fields");
       return;
     }
-
-    setFleets(prev => [
-      ...prev,
-      {
-        id: Date.now(),
-        reg,
-        category,
-        driver,
-        available
-      }
-    ]);
-
-    setReg("");
-    setCategory("");
+    addFleet({
+      id: Date.now(),
+      regNo,
+      category,
+      driver,
+      available,
+    });
+    setRegNo("");
+    setCategory("Auto");
     setDriver("");
-    setAvailable(true);
+    setAvailable("Available");
   };
 
   return (
-    <div>
+    <div style={{ padding: "1rem", width: "250px", borderRight: "1px solid #ccc" }}>
       <h3>Add Fleet</h3>
-
       <input
         placeholder="Vehicle Reg No"
-        value={reg}
-        onChange={e => setReg(e.target.value)}
+        value={regNo}
+        onChange={(e) => setRegNo(e.target.value)}
       />
-
-      <select value={category} onChange={e => setCategory(e.target.value)}>
-        <option value="">Select Category</option>
+      <select value={category} onChange={(e) => setCategory(e.target.value)}>
         <option>Auto</option>
         <option>Car</option>
         <option>Truck</option>
         <option>Bus</option>
       </select>
-
       <input
         placeholder="Driver Name"
         value={driver}
-        onChange={e => setDriver(e.target.value)}
+        onChange={(e) => setDriver(e.target.value)}
       />
-
-      <select
-        value={available}
-        onChange={e => setAvailable(e.target.value === "true")}
-      >
-        <option value="true">Available</option>
-        <option value="false">Unavailable</option>
+      <select value={available} onChange={(e) => setAvailable(e.target.value)}>
+        <option>Available</option>
+        <option>Unavailable</option>
       </select>
-
       <button onClick={handleAdd}>Add Fleet</button>
     </div>
   );
